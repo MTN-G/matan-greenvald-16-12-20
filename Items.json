@@ -1,0 +1,47 @@
+[
+    {
+        "id": 1,
+        "name": "Yoga Mattress",
+        "price": 30,
+        "estimatedDate": "20-12-2020",
+        "store": "alo yoga",
+        "recieved": false,
+        "labels": ["sport"]
+    },
+    {
+        "id": 2,
+        "name": "Beard Wax",
+        "price": 10,
+        "estimatedDate": "21-12-2020",
+        "store": "Jhonson & Jhonson",
+        "recieved": false,
+        "labels": ["beauty"]
+    },
+    {
+        "id": 3,
+        "name": "Gold Neckless",
+        "price": 25,
+        "estimatedDate": "22-12-2020",
+        "store": "Terminal X",
+        "recieved": false,
+        "labels": ["accesories"]
+    },
+    {
+        "id": 4,
+        "name": "Yoga Blocks",
+        "price": 15,
+        "estimatedDate": "22-12-2020",
+        "store": "alo yoga",
+        "recieved": false,
+        "labels": ["accesories", "sport"]
+    },
+    {
+        "id": 5,
+        "name": "Cat Suit",
+        "price": 50,
+        "estimatedDate": "24-12-2020",
+        "store": "Petbuy",
+        "recieved": false,
+        "labels": ["clothes"]
+    }
+]
