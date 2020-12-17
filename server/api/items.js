@@ -2,12 +2,12 @@ const Router = require('express').Router
 const fs = require('fs').promises
 const router = Router();
 
-router.get("/all/:received", async (req, res) => {
+router.get("/all/:recieved", async (req, res) => {
 
   try {
     let items = await fs.readFile('./files/items.json','utf8');
     items = JSON.parse(items)
-    if (req.params.received === "received") {
+    if (req.params.recieved === "recieved") {
       items = items.filter((item) => item.recieved === true)
     } else {
       items = items.filter((item) => item.recieved === false)

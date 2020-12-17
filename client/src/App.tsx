@@ -1,11 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Link, Route } from "react-router-dom";
-import { H1, StyledDiv, StyledUl, Wrapper } from "./styles/styledComponents";
+import { StyledDiv } from "./styles/styledComponents";
 import { Button } from "@material-ui/core";
 import Canvas from "./components/canvas";
 import List from "./components/list";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import axios from "axios";
+import Recieved from "./components/recieved";
 
 const theme = createMuiTheme({
   palette: {
@@ -18,12 +20,32 @@ const theme = createMuiTheme({
   },
 });
 
-
-function Received() {
-  return <div>this is received</div>;
-}
-
 function App() {
+  const [currency, setCurrency] = useState<number>(0);
+
+  const getCurrency = useCallback(async() => {
+    const { data } = await axios.get(
+      "https://api.exchangeratesapi.io/latest",
+      {
+        params: {
+          base: "USD",
+          symbols: "ILS",
+        },
+      }
+    );
+    if (currency !== data.rates.ILS) {
+      setCurrency(data.rates.ILS);
+    }
+  }, [currency]);
+  
+  useEffect(() => {
+    getCurrency()
+    setInterval(async () => {
+      getCurrency();
+    }, [1000 * 10]);
+  }, [getCurrency]);
+
+  console.log(currency);
   return (
     <Router>
       <ThemeProvider theme={theme}>
@@ -48,9 +70,16 @@ function App() {
           </StyledDiv>
           <Canvas />
         </div>
-        <Route exact path="/list" component={List}></Route>
-        <Route exact path="/received" component={Received}></Route>
-        {/* <Route exact path="/canvas" component={Canvas}></Route> */}
+        <Route
+          exact
+          path="/list"
+          component={() => <List currency={currency} />}
+        ></Route>
+        <Route
+          exact
+          path="/received"
+          component={() => <Recieved currency={currency} />}
+        ></Route>
       </ThemeProvider>
     </Router>
   );

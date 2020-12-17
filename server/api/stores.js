@@ -4,9 +4,19 @@ const router = Router();
 
 router.get("/all", async (req, res) => {
 
-  try {
+    try {
+        let items = await fs.readFile('./files/items.json','utf8');
+        items = JSON.parse(items)
+        
     let stores = await fs.readFile('./files/stores.json', 'utf8');
-    stores = JSON.parse(stores)
+        stores = JSON.parse(stores)
+        stores.map(store => {
+            store.count = 0;
+            items.forEach(item => {
+                if (item.store === store.id) store.count++
+            })
+            return store
+        })
     res.json(stores);
   } catch (error) {
     res.status(500).json({ error: error.message });

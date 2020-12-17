@@ -3,7 +3,7 @@
         "id": 1,
         "name": "Yoga Mattress",
         "price": 30,
-        "estimatedDate": "20-12-2020",
+        "estimatedDate": 1608240110000,
         "store": 1,
         "recieved": false,
         "labels": [1]
@@ -12,7 +12,7 @@
         "id": 2,
         "name": "Beard Wax",
         "price": 10,
-        "estimatedDate": "21-12-2020",
+        "estimatedDate": 1608499310000,
         "store": 2,
         "recieved": false,
         "labels": [2]
@@ -21,7 +21,7 @@
         "id": 3,
         "name": "Gold Neckless",
         "price": 25,
-        "estimatedDate": "22-12-2020",
+        "estimatedDate": 1608672110000,
         "store": 3,
         "recieved": false,
         "labels": [3]
@@ -30,7 +30,7 @@
         "id": 4,
         "name": "Yoga Blocks",
         "price": 15,
-        "estimatedDate": "22-12-2020",
+        "estimatedDate": 1608931310000,
         "store": 1,
         "recieved": false,
         "labels": [1,3]
@@ -39,9 +39,18 @@
         "id": 5,
         "name": "Cat Suit",
         "price": 50,
-        "estimatedDate": "24-12-2020",
+        "estimatedDate": 1609017710000,
         "store": 4,
         "recieved": false,
         "labels": [4]
+    },
+    {
+        "id": 6,
+        "name": "Dog Food",
+        "price": 50,
+        "estimatedDate": 1608240110000,
+        "store": 4,
+        "recieved": true,
+        "labels": []
     }
 ]
