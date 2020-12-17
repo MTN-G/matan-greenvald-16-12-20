@@ -10,6 +10,7 @@ export const iconStyle = { cursor: "default" };
 export const repeatFormula = "1fr 2.5fr 2.5fr 1fr";
 
 export const H1 = styled.h1`
+  z-index: 1;
   padding: 10px 20px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 27px;
@@ -25,6 +26,7 @@ export const H1 = styled.h1`
   min-width: 180px;
   box-shadow: 5px 4px 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
   z-index: 2;
+  text-align: center;
 `;
 
 export const TitleWrapper = styled.div`
@@ -59,6 +61,7 @@ export const Wrapper = styled.div<WrraperProps>`
     props.backgroundColor ? props.backgroundColor : "white"};
   color: ${(props: WrraperProps) => (props.color ? props.color : "black")};
   position: relative;
+  align-items: center;
 `;
 
 export const Center = styled.div`
@@ -101,19 +104,13 @@ export const StyledDiv = styled.div`
     props.repeatFormula ? props.repeatFormula : "1fr 2.5fr 2fr 2.5fr 2fr"};
   padding: 10px;
   align-items: center;
-  background-color: rgba(180, 180, 180, 0.12);
+  background-color: rgba(22, 22, 22, 0.486);
   transition: 150ms;
   border-radius: 2px;
   margin: 2px;
   &:hover {
-    background-color: rgba(201, 201, 201, 0.38);
+    background-color: rgba(0, 0, 0, 0.65);
   }
-`;
-
-export const StyledSpan = styled.span`
-  font-size: 16px;
-  font-weight: ${(props: { weight: string }) =>
-    props.weight === "bold" && "bold"};
 `;
 
 export const TableHeader = styled(StyledDiv)`
