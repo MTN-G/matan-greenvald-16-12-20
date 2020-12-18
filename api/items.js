@@ -7,7 +7,6 @@ const dir_name = process.cwd()
 
 router.get("/all/:recieved", async (req, res) => {
   try {
-    console.log(dir_name)
     let items = await fs.readFile(path.join(dir_name, 'api/files/Items.json'), "utf8");
     items = JSON.parse(items);
     if (req.params.recieved === "recieved") {
@@ -29,6 +28,7 @@ router.get("/all/:recieved", async (req, res) => {
       item.labels = newLabels;
       return item;
     });
+    resItems.sort((a,b)=> a.estimatedDate - b.estimatedDate)
     res.json(resItems);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -37,22 +37,58 @@ router.get("/all/:recieved", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    let items = await fs.readFile(path.join(dir_name, './files/Items.json'), "utf8");
+    let items = await fs.readFile(path.join(dir_name, 'api/files/Items.json'), "utf8");
     items = JSON.parse(items);
-    const { name, date, store, label } = req.body;
+    const { name, estimatedDate, store, labels, price} = req.body;
     const newItem = {
       id: items[items.length - 1].id + 1,
       name,
-      date,
+      estimatedDate,
       recieved: false,
       store,
-      label: [label],
+      labels,
+      price
     };
-    const newItemsArray = items.push(newItem);
-    const newItemsArrayJson = [];
-    newItemsArray.forEach((obj) => newItemsArrayJson.push(JSON.stringify(obj)));
-    await fs.writeFile(path.join(dir_name, './file/Items.json'), newItemsArrayJson);
-    res.json({ success: true });
+    items.push(newItem)
+    await fs.writeFile(path.join(dir_name, 'api/files/Items.json'), JSON.stringify(items));
+    res.json(newItem);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.put("/recieved/:id/:boolean", async (req, res) => {
+  try {
+    let items = await fs.readFile(path.join(dir_name, 'api/files/Items.json'), "utf8");
+    items = JSON.parse(items);
+    const newItem = items.findIndex((item => item.id === parseInt(req.params.id)))
+    if (req.params.boolean === "true") {
+      items[newItem].recieved = true
+    } else if (req.params.boolean === "false") {
+      items[newItem].recieved = false
+    } else {
+      res.status(500).json({error: "invalid params"})
+    }
+    
+    JSON.stringify(items)
+    await fs.writeFile(path.join(dir_name, 'api/files/Items.json'), JSON.stringify(items));
+    res.json(JSON.stringify(items));
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    let items = await fs.readFile(path.join(dir_name, 'api/files/Items.json'), "utf8");
+    items = JSON.parse(items);
+    const itemToDelete = items.findIndex((item => item.id === parseInt(req.params.id)))
+    items.splice(itemToDelete, 1)
+    JSON.stringify(items)
+    await fs.writeFile(path.join(dir_name, 'api/files/Items.json'), JSON.stringify(items));
+    res.json(JSON.stringify(items));
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });

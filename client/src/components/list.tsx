@@ -1,78 +1,40 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import NewItem from "./newItem";
 import {
   H1,
   StyledDiv,
   StyledUl,
   Wrapper,
   TableHeader,
-  StyledSelect,
-  StyledForm,
 } from "../styles/styledComponents";
 import DeleteIcon from "@material-ui/icons/Delete";
 import axios from "axios";
-import { Item, Label, Store } from "../../typescript/interfaces";
-import { Button, TextField } from "@material-ui/core";
+import { Item, Label, Store, ListPageProps } from "../typescript/interfaces";
+import { Button } from "@material-ui/core";
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+
 import { convertDateToString } from "../helpers";
 
-const List: React.FC<{ currency: number }> = ({ currency }) => {
+const List: React.FC<ListPageProps> = ({ currency, getItems, getLabels, getStores }) => {
   const [items, setItems] = useState<Item[]>([]);
   const [stores, setStores] = useState<Store[]>([]);
   const [labels, setLabels] = useState<Label[]>([]);
   const [toggleAdd, setToggle] = useState<boolean>(false);
-  const [newItem, setNewItem] = useState<Partial<Item>>({});
-  const [newStore, setNewStore] = useState<Partial<Store>>();
-  const [newLabel, setNewLabel] = useState<Partial<Label>>();
-  const [error, setError] = useState<string>(" ");
-  const getItems = useCallback(async () => {
-    const data: Item[] = await (await axios.get("/api/items/all/waiting")).data;
-    data.map((item: Item) => {
-      item.estimatedDate = convertDateToString(item.estimatedDate!);
-      return item;
-    });
-    setItems(data);
-  }, []);
-
-  const getLabels = useCallback(async () => {
-    const data: Label[] = (await axios.get("/api/labels/all")).data;
-    console.log(data);
-
-    setLabels(data);
-  }, []);
-
-  const getStores = useCallback(async () => {
-    try {
-      const data: Store[] = (await axios.get("/api/stores/all")).data;
-      console.log(data);
-      setStores(data);
-    } catch (error) {
-      console.trace(error);
-    }
-  }, []);
 
   useEffect(() => {
-    getItems();
-    getStores();
-    getLabels();
+    getItems("waiting", setItems);
+    getStores(setStores)
+    getLabels(setLabels);
   }, [getItems, getStores, getLabels]);
 
-  //coming soon 
-  
-  async function addItem(item: Partial<Item>) {
+  async function recieveItem (item: Item) {
     try {
-      if (!item.name) setError("item name is required");
-      else if (item!.estimatedDate! <= new Date().getTime())
-        setError("invalid date");
-      else if (item!.price! <= 1) setError("invalid proce");
-      else {
-        // await axios.post("/api/items", item);
-        setError("");
-      }
+      const id = item.id;
+      await axios.put(`/api/items/recieved/${id}/true`)
     } catch (error) {
-      setError(error.message);
-      console.log(error);
+      console.log(error)
     }
-  };
-
+  }
 
   return (
     <>
@@ -90,130 +52,20 @@ const List: React.FC<{ currency: number }> = ({ currency }) => {
           Add item
         </Button>
         {toggleAdd && (
-          <>
-            <StyledForm>
-              <TextField
-                id="standard-basic"
-                label="Item"
-                onChange={(e) => {
-                  const tempItem = newItem;
-                  tempItem!.name = e.target.value;
-                  setNewItem(tempItem);
-                }}
-              />
-              <TextField
-                id="standard-basic"
-                type="number"
-                label="price (USD)"
-                onChange={(e) => {
-                  const tempItem = newItem;
-                  tempItem!.price = parseInt(e.target.value);
-                  setNewItem(tempItem);
-                }}
-              />
-              <TextField
-                id="date"
-                label="Estimated Arriving"
-                type="date"
-                defaultValue={new Date()}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                onChange={(e) => {
-                  const tempItem = newItem;
-                  tempItem!.estimatedDate = new Date(e.target.value).getTime();
-                  setNewItem(tempItem);
-                }}
-              />
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <span>select store</span>
-                <StyledSelect>
-                  {stores.map((store) => (
-                    <option>{store.name}</option>
-                  ))}
-                </StyledSelect>
-                <TextField
-                  id="standard-basic"
-                  label="new store"
-                  onChange={(e) => {
-                    const tempStore = newStore;
-                    tempStore!.name = e.target.value;
-                    setNewStore(tempStore);
-                  }}
-                />
-                <TextField
-                  id="standard-basic"
-                  label="add link"
-                  onChange={(e) => {
-                    const tempStore = newStore;
-                    tempStore!.link = e.target.value;
-                    setNewStore(tempStore);
-                  }}
-                />
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    getStores();
-                  }}
-                >
-                  save store
-                </Button>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <span>select label</span>
-                <StyledSelect>
-                  {labels.map((label) => (
-                    <option>{label.name}</option>
-                  ))}
-                </StyledSelect>
-                <TextField
-                  id="standard-basic"
-                  label="new label"
-                  onChange={(e) => {
-                    const tempLabel = newLabel;
-                    tempLabel!.name = e.target.value;
-                    setNewStore(tempLabel);
-                  }}
-                />
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    getLabels();
-                  }}
-                >
-                  save label
-                </Button>
-              </div>
-              {error && <div style={{ color: "red" }}>{error}</div>}
-            </StyledForm>
-            <div style={{ display: "flex" }}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={async () => {
-                  await addItem(newItem);
-                  if (error.length < 1) {
-                    setToggle(false);
-                    getItems();
-                  }
-                }}
-              >
-                SAVE ITEM
-              </Button>
-
-              <Button
-                onClick={() => setToggle(false)}
-                variant="contained"
-                color="secondary"
-              >
-                Cencel
-              </Button>
-            </div>
-          </>
+          <NewItem
+            setToggle={setToggle}
+            items={items}
+            stores={stores}
+            labels={labels}
+            getItems={getItems}
+            getStores={getStores}
+            getLabels={getLabels}
+          />
         )}
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <StyledUl>
-            <TableHeader repeatFormula="2fr 2fr 2fr 2fr 0.5fr 0.5fr">
+            <TableHeader repeatFormula="1fr 2fr 2fr 2fr 2fr 0.5fr 0.5fr">
+              <span/>
               <span>Item</span>
               <span>Price</span>
               <span>EST date</span>
@@ -222,24 +74,37 @@ const List: React.FC<{ currency: number }> = ({ currency }) => {
             {items &&
               items.map((item) => (
                 <StyledDiv
-                  style={{ backgroundColor: "#c2bfb8" }}
-                  repeatFormula="2fr 1fr 1fr 2fr 2fr 0.5fr 0.5fr"
+                  style={{ backgroundColor: item.estimatedDate < Date.now() ? "#ed4539": "#c2bfb8" }}
+                  repeatFormula="1fr 2fr 1fr 1fr 2fr 2fr 0.5fr 0.5fr"
                 >
+                  <Button onClick={async () => {
+                    await recieveItem(item)
+                    getItems("waiting", setItems)
+                  }
+                  }><CheckCircleIcon fontSize="large" style={{ color: "green" }} /></Button>
                   <b>{item.name}</b>
                   <span>{item.price}$</span>
                   <span>{Math.floor(item.price * currency)} ILS</span>
-                  <span>{item.estimatedDate}</span>
+                  <span>{convertDateToString(item.estimatedDate) }</span>
                   <span>{item.store}</span>
                   <Button variant="contained" color="secondary">
                     EDIT
                   </Button>
-                  <Button>
+                  <Button onClick={async () => {
+                    await axios.delete(`api/items/${item.id}`)
+                    getItems("waiting", setItems)
+                  }}>
                     <DeleteIcon />
                   </Button>
                 </StyledDiv>
               ))}
           </StyledUl>
         </div>
+         <TableHeader repeatFormula="1.2fr 1fr 1fr">
+        <b>Total:</b>
+        <span>{items.reduce((prev, curr) => prev + curr.price, 0)}$</span>
+        <span>{Math.floor(items.reduce((prev, curr) => prev + curr.price, 0) * currency)} ILS</span>
+      </TableHeader>
       </Wrapper>
       <Wrapper
         padding="50px"
@@ -268,6 +133,7 @@ const List: React.FC<{ currency: number }> = ({ currency }) => {
               </StyledDiv>
             ))}
         </StyledUl>
+        
       </Wrapper>
     </>
   );
