@@ -19,21 +19,20 @@ const theme = createMuiTheme({
       main: "#b39c68",
     },
     error: {
-      main: "#f44336"
-    }
+      main: "#f44336",
+    },
   },
 });
 
 function App() {
-
   const [currency, setCurrency] = useState<number>(0);
 
   const getItems = useCallback(async (type: string, setItems: Function) => {
     try {
-      const data: Item[] =(await axios.get(`/api/items/all/${type}`)).data;
+      const data: Item[] = (await axios.get(`/api/items/all/${type}`)).data;
       setItems(data);
     } catch (error) {
-      console.trace(error)
+      console.trace(error);
     }
   }, []);
 
@@ -42,7 +41,7 @@ function App() {
       const data: Label[] = (await axios.get("/api/labels/all")).data;
       setLabels(data);
     } catch (error) {
-      console.trace(error)
+      console.trace(error);
     }
   }, []);
 
@@ -101,12 +100,26 @@ function App() {
         <Route
           exact
           path="/list"
-          component={() => <List currency={currency} getItems={getItems} getStores={getStores} getLabels={getLabels} />}
+          component={() => (
+            <List
+              currency={currency}
+              getItems={getItems}
+              getStores={getStores}
+              getLabels={getLabels}
+            />
+          )}
         ></Route>
         <Route
           exact
           path="/received"
-          component={() => <Recieved currency={currency} getItems={getItems} getStores={getStores} getLabels={getLabels}  />}
+          component={() => (
+            <Recieved
+              currency={currency}
+              getItems={getItems}
+              getStores={getStores}
+              getLabels={getLabels}
+            />
+          )}
         ></Route>
       </ThemeProvider>
     </Router>
