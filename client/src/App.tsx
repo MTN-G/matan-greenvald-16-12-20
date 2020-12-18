@@ -23,23 +23,20 @@ const theme = createMuiTheme({
 function App() {
   const [currency, setCurrency] = useState<number>(0);
 
-  const getCurrency = useCallback(async() => {
-    const { data } = await axios.get(
-      "https://api.exchangeratesapi.io/latest",
-      {
-        params: {
-          base: "USD",
-          symbols: "ILS",
-        },
-      }
-    );
+  const getCurrency = useCallback(async () => {
+    const { data } = await axios.get("https://api.exchangeratesapi.io/latest", {
+      params: {
+        base: "USD",
+        symbols: "ILS",
+      },
+    });
     if (currency !== data.rates.ILS) {
       setCurrency(data.rates.ILS);
     }
   }, [currency]);
-  
+
   useEffect(() => {
-    getCurrency()
+    getCurrency();
     setInterval(async () => {
       getCurrency();
     }, [1000 * 10]);

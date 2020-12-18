@@ -6,6 +6,7 @@ import {
   Wrapper,
   TableHeader,
   StyledSelect,
+  StyledForm,
 } from "../styles/styledComponents";
 import DeleteIcon from "@material-ui/icons/Delete";
 import axios from "axios";
@@ -17,23 +18,19 @@ const List: React.FC<{ currency: number }> = ({ currency }) => {
   const [items, setItems] = useState<Item[]>([]);
   const [stores, setStores] = useState<Store[]>([]);
   const [labels, setLabels] = useState<Label[]>([]);
-  const [search, setSearch] = useState("");
   const [toggleAdd, setToggle] = useState<boolean>(false);
-
+  const [newItem, setNewItem] = useState<Partial<Item>>({});
+  const [newStore, setNewStore] = useState<Partial<Store>>();
+  const [newLabel, setNewLabel] = useState<Partial<Label>>();
+  const [error, setError] = useState<string>(" ");
   const getItems = useCallback(async () => {
-    const data: Item[] = await (
-      await axios.get("/api/items/all/waiting", {
-        params: {
-          search,
-        },
-      })
-    ).data;
+    const data: Item[] = await (await axios.get("/api/items/all/waiting")).data;
     data.map((item: Item) => {
       item.estimatedDate = convertDateToString(item.estimatedDate!);
       return item;
     });
     setItems(data);
-  }, [search]);
+  }, []);
 
   const getLabels = useCallback(async () => {
     const data: Label[] = (await axios.get("/api/labels/all")).data;
@@ -58,8 +55,20 @@ const List: React.FC<{ currency: number }> = ({ currency }) => {
     getLabels();
   }, [getItems, getStores, getLabels]);
 
-  async function addItem(item: Item) {
-    await axios.post("/api/items", item);
+  async function addItem(item: Partial<Item>) {
+    try {
+      if (!item.name) setError("item name is required");
+      else if (item!.estimatedDate! <= new Date().getTime())
+        setError("invalid date");
+      else if (item!.price! <= 1) setError("invalid proce");
+      else {
+        await axios.post("/api/items", item);
+        setError("");
+      }
+    } catch (error) {
+      setError(error.message);
+      console.log(error);
+    }
   }
 
   return (
@@ -78,29 +87,126 @@ const List: React.FC<{ currency: number }> = ({ currency }) => {
           Add item
         </Button>
         {toggleAdd && (
-          <form>
-            <TextField id="standard-basic" label="Standard" />
-            <TextField
-              id="date"
-              label="Estimated Arriving"
-              type="date"
-              defaultValue={new Date()}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-            <StyledSelect>
-              {stores.map((store) => (
-                <option>{store.name}</option>
-              ))}
-            </StyledSelect>
-            <StyledSelect>
-              {" "}
-              {labels.map((label) => (
-                <option>{label.name}</option>
-              ))}
-            </StyledSelect>
-          </form>
+          <>
+            <StyledForm>
+              <TextField
+                id="standard-basic"
+                label="Item"
+                onChange={(e) => {
+                  const tempItem = newItem;
+                  tempItem!.name = e.target.value;
+                  setNewItem(tempItem);
+                }}
+              />
+              <TextField
+                id="standard-basic"
+                type="number"
+                label="price (USD)"
+                onChange={(e) => {
+                  const tempItem = newItem;
+                  tempItem!.price = parseInt(e.target.value);
+                  setNewItem(tempItem);
+                }}
+              />
+              <TextField
+                id="date"
+                label="Estimated Arriving"
+                type="date"
+                defaultValue={new Date()}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                onChange={(e) => {
+                  const tempItem = newItem;
+                  tempItem!.estimatedDate = new Date(e.target.value).getTime();
+                  setNewItem(tempItem);
+                }}
+              />
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span>select store</span>
+                <StyledSelect>
+                  {stores.map((store) => (
+                    <option>{store.name}</option>
+                  ))}
+                </StyledSelect>
+                <TextField
+                  id="standard-basic"
+                  label="new store"
+                  onChange={(e) => {
+                    const tempStore = newStore;
+                    tempStore!.name = e.target.value;
+                    setNewStore(tempStore);
+                  }}
+                />
+                <TextField
+                  id="standard-basic"
+                  label="add link"
+                  onChange={(e) => {
+                    const tempStore = newStore;
+                    tempStore!.link = e.target.value;
+                    setNewStore(tempStore);
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    getStores();
+                  }}
+                >
+                  save store
+                </Button>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span>select label</span>
+                <StyledSelect>
+                  {labels.map((label) => (
+                    <option>{label.name}</option>
+                  ))}
+                </StyledSelect>
+                <TextField
+                  id="standard-basic"
+                  label="new label"
+                  onChange={(e) => {
+                    const tempLabel = newLabel;
+                    tempLabel!.name = e.target.value;
+                    setNewStore(tempLabel);
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    getLabels();
+                  }}
+                >
+                  save label
+                </Button>
+              </div>
+              {error && <div style={{ color: "red" }}>{error}</div>}
+            </StyledForm>
+            <div style={{ display: "flex" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={async () => {
+                  await addItem(newItem);
+                  if (error.length < 1) {
+                    setToggle(false);
+                    getItems();
+                  }
+                }}
+              >
+                SAVE ITEM
+              </Button>
+
+              <Button
+                onClick={() => setToggle(false)}
+                variant="contained"
+                color="secondary"
+              >
+                Cencel
+              </Button>
+            </div>
+          </>
         )}
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <StyledUl>

@@ -15,9 +15,6 @@ export const H1 = styled.h1`
   font-family: Arial, Helvetica, sans-serif;
   font-size: 27px;
   color: white;
-  /* position: relative; */
-  /* left: -50%;
-  top: -80px; */
   margin: 0;
   display: inline;
   background-color: ${(props: { color: string }) =>
@@ -112,6 +109,14 @@ export const StyledDiv = styled.div`
     background-color: rgba(0, 0, 0, 0.65);
   }
 `;
+
+export const StyledForm = styled.form`
+  display: grid;
+  column-gap: 20px;
+  row-gap: 20px;
+  grid-template-columns: 30% 30% 30%;
+  grid-template: "input input input";
+`
 
 export const TableHeader = styled(StyledDiv)`
   background-color: rgba(20, 20, 25, 0.6);
