@@ -5,7 +5,7 @@ const router = Router();
 router.get("/all", async (req, res) => {
 
   try {
-    let labels = await fs.readFile('./files/labels.json', 'utf8');
+    let labels = await fs.readFile('../files/labels.json', 'utf8');
     labels = JSON.parse(labels)
     res.json(labels);
   } catch (error) {
@@ -16,7 +16,7 @@ router.get("/all", async (req, res) => {
 router.post("/", async (req, res) => {
   const newLabel = req.body
   const newLabelJson = JSON.stringify(newLabel)
-  await fs.writeFile('./files/labels.json', newLabelJson)
+  await fs.writeFile('../files/labels.json', newLabelJson)
 })
 
 
