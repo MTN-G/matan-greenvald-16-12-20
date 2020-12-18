@@ -1,19 +1,20 @@
 const Router = require("express").Router;
 const fs = require("fs").promises;
 const router = Router();
+const path = require("path")
 
 router.get("/all/:recieved", async (req, res) => {
   try {
-    let items = await fs.readFile("./files/items.json", "utf8");
+    let items = await fs.readFile(path.join(__dirname, './file/items.json'), "utf8");
     items = JSON.parse(items);
     if (req.params.recieved === "recieved") {
       items = items.filter((item) => item.recieved === true);
     } else {
       items = items.filter((item) => item.recieved === false);
     }
-    let stores = await fs.readFile("./files/stores.json", "utf8");
+    let stores = await fs.readFile(path.join(__dirname, './file/stores.json'), "utf8");
     stores = JSON.parse(stores);
-    let labels = await fs.readFile("./files/labels.json", "utf8");
+    let labels = await fs.readFile(path.join(__dirname, './file/labels.json'), "utf8");
     labels = JSON.parse(labels);
     const resItems = items.map((item) => {
       item.store = stores.find((store) => store.id === item.store).name;
@@ -33,7 +34,7 @@ router.get("/all/:recieved", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    let items = await fs.readFile("./files/items.json", "utf8");
+    let items = await fs.readFile(path.join(__dirname, './file/items.json'), "utf8");
     items = JSON.parse(items);
     const { name, date, store, label } = req.body;
     const newItem = {
@@ -47,7 +48,7 @@ router.post("/", async (req, res) => {
     const newItemsArray = items.push(newItem);
     const newItemsArrayJson = [];
     newItemsArray.forEach((obj) => newItemsArrayJson.push(JSON.stringify(obj)));
-    await fs.writeFile("./files/items.json", newItemsArrayJson);
+    await fs.writeFile(path.join(__dirname, './file/items.json'), newItemsArrayJson);
     res.json({ success: true });
   } catch (error) {
     console.log(error);
