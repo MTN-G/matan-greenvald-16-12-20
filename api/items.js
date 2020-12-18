@@ -5,16 +5,17 @@ const path = require("path")
 
 router.get("/all/:recieved", async (req, res) => {
   try {
-    let items = await fs.readFile(path.join(__dirname, './file/items.json'), "utf8");
+    console.log(__dirname)
+    let items = await fs.readFile(path.join(__dirname, 'files/items.json'), "utf8");
     items = JSON.parse(items);
     if (req.params.recieved === "recieved") {
       items = items.filter((item) => item.recieved === true);
     } else {
       items = items.filter((item) => item.recieved === false);
     }
-    let stores = await fs.readFile(path.join(__dirname, './file/stores.json'), "utf8");
+    let stores = await fs.readFile(path.join(__dirname, 'files/stores.json'), "utf8");
     stores = JSON.parse(stores);
-    let labels = await fs.readFile(path.join(__dirname, './file/labels.json'), "utf8");
+    let labels = await fs.readFile(path.join(__dirname, 'files/labels.json'), "utf8");
     labels = JSON.parse(labels);
     const resItems = items.map((item) => {
       item.store = stores.find((store) => store.id === item.store).name;
@@ -34,7 +35,7 @@ router.get("/all/:recieved", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    let items = await fs.readFile(path.join(__dirname, './file/items.json'), "utf8");
+    let items = await fs.readFile(path.join(__dirname, './files/items.json'), "utf8");
     items = JSON.parse(items);
     const { name, date, store, label } = req.body;
     const newItem = {

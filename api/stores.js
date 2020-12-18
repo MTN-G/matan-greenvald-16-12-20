@@ -1,14 +1,15 @@
 const Router = require('express').Router
 const fs = require('fs').promises
 const router = Router();
+const path = require("path")
 
 router.get("/all", async (req, res) => {
 
     try {
-        let items = await fs.readFile('./files/items.json','utf8');
+        let items = await fs.readFile(path.join(__dirname, 'files/items.json'),'utf8');
         items = JSON.parse(items)
         
-    let stores = await fs.readFile('./files/stores.json', 'utf8');
+    let stores = await fs.readFile(path.join(__dirname, 'files/stores.json'), 'utf8');
         stores = JSON.parse(stores)
         stores.map(store => {
             store.count = 0;
