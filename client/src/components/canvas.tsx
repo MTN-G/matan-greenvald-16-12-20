@@ -49,7 +49,7 @@ const Canvas: React.FC = () => {
         }, latency);
       }
     };
-  }, [giftsColumn]);
+  }, [giftsColumn, canvasRef]);
 
   return (
     <canvas

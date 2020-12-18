@@ -1,11 +1,15 @@
 const Router = require('express').Router
 const fs = require('fs').promises
 const router = Router();
+const path = require("path")
+
+const dir_name = process.cwd()
+
 
 router.get("/all", async (req, res) => {
 
   try {
-    let labels = await fs.readFile(path.join(__dirname, 'files/labels.json'), 'utf8');
+    let labels = await fs.readFile(path.join(dir_name, 'api/files/labels.json'), 'utf8');
     labels = JSON.parse(labels)
     res.json(labels);
   } catch (error) {
@@ -16,7 +20,7 @@ router.get("/all", async (req, res) => {
 router.post("/", async (req, res) => {
   const newLabel = req.body
   const newLabelJson = JSON.stringify(newLabel)
-  await fs.writeFile(path.join(__dirname, 'files/labels.json'), newLabelJson)
+  await fs.writeFile(path.join(dir_name, 'api/files/labels.json'), newLabelJson)
 })
 
 
