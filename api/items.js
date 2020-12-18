@@ -8,7 +8,7 @@ const dir_name = process.cwd()
 router.get("/all/:recieved", async (req, res) => {
   try {
     console.log(dir_name)
-    let items = await fs.readFile(path.join(dir_name, 'api/files/items.json'), "utf8");
+    let items = await fs.readFile(path.join(dir_name, 'api/files/Items.json'), "utf8");
     items = JSON.parse(items);
     if (req.params.recieved === "recieved") {
       items = items.filter((item) => item.recieved === true);
@@ -37,7 +37,7 @@ router.get("/all/:recieved", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    let items = await fs.readFile(path.join(dir_name, './files/items.json'), "utf8");
+    let items = await fs.readFile(path.join(dir_name, './files/Items.json'), "utf8");
     items = JSON.parse(items);
     const { name, date, store, label } = req.body;
     const newItem = {
@@ -51,7 +51,7 @@ router.post("/", async (req, res) => {
     const newItemsArray = items.push(newItem);
     const newItemsArrayJson = [];
     newItemsArray.forEach((obj) => newItemsArrayJson.push(JSON.stringify(obj)));
-    await fs.writeFile(path.join(dir_name, './file/items.json'), newItemsArrayJson);
+    await fs.writeFile(path.join(dir_name, './file/Items.json'), newItemsArrayJson);
     res.json({ success: true });
   } catch (error) {
     console.log(error);

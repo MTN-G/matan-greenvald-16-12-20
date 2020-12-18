@@ -8,7 +8,7 @@ const dir_name = process.cwd()
 router.get("/all", async (req, res) => {
 
     try {
-        let items = await fs.readFile(path.join(dir_name, 'api/files/items.json'),'utf8');
+        let items = await fs.readFile(path.join(dir_name, 'api/files/Items.json'),'utf8');
         items = JSON.parse(items)
         
     let stores = await fs.readFile(path.join(dir_name, 'api/files/stores.json'), 'utf8');
