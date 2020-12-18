@@ -55,6 +55,8 @@ const List: React.FC<{ currency: number }> = ({ currency }) => {
     getLabels();
   }, [getItems, getStores, getLabels]);
 
+  //coming soon 
+  
   async function addItem(item: Partial<Item>) {
     try {
       if (!item.name) setError("item name is required");
@@ -62,14 +64,15 @@ const List: React.FC<{ currency: number }> = ({ currency }) => {
         setError("invalid date");
       else if (item!.price! <= 1) setError("invalid proce");
       else {
-        await axios.post("/api/items", item);
+        // await axios.post("/api/items", item);
         setError("");
       }
     } catch (error) {
       setError(error.message);
       console.log(error);
     }
-  }
+  };
+
 
   return (
     <>
