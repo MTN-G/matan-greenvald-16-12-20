@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path") ;
 
 const app = express();
-app.use(express.static("build"));
+app.use(express.static("client/build"));
 app.use(express.json());
 
 const dir_name = process.cwd()
