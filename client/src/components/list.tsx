@@ -150,7 +150,7 @@ const List: React.FC<ListPageProps> = ({
                 <Button
                   variant="contained"
                   color="secondary"
-                  onClick={() => (window.location.href = "https:" + store.link)}
+                  onClick={() => (window.location.href = store.link)}
                 >
                   Website
                 </Button>
