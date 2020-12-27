@@ -11,8 +11,7 @@ Made with:
 
 [OPEN APP](https://thawing-ridge-63234.herokuapp.com)
 
-for self use:
+For self use:
 - clone this repo
 - cd server & npm i & npm run dev
 - cd client & npm i & npm start
--
