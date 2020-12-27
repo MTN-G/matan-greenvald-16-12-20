@@ -7,7 +7,6 @@ Made with:
 - canvas
 - styled component 
 - express.js
-- data store in json files
 
 [OPEN APP](https://thawing-ridge-63234.herokuapp.com)
 
